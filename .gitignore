@@ -1,0 +1,22 @@
+.DS_Store
+.current
+
+# Editor tempfiles
+*.swo
+*.swp
+
+# LaTeX ignores
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+*.pdf
+*.nav
+*.snm

@@ -1,0 +1,40 @@
+%TeX
+
+\documentclass{beamer}
+
+\usepackage{xeCJK}
+
+\usetheme{DarkConsole}
+\useinnertheme{rectangles}
+\setbeamercolor{normal text}{bg=black!05}
+
+\newcommand{\VaporSec}{
+    \symbol{65334}\symbol{65313}\symbol{65328}\symbol{65327}\symbol{65330}%
+    \symbol{65331}\symbol{65317}\symbol{65315}
+}
+
+\title{For Realz Mode!}
+\subtitle{
+    Reversing an MBR from the CSAW CTF\\
+    {\em (and how to write a keygen with a SAT solver)}
+}
+\author{@t0x0 \and @numinit}
+\institute{\VaporSec}
+\date{2017-XX-YY}
+
+\begin{document}
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}
+    \frametitle{Outline}
+    \tableofcontents[]
+\end{frame}
+
+
+\include{include/intro}
+\include{include/part1}
+\include{include/part2}
+
+\end{document}
