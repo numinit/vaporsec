@@ -1,0 +1,3 @@
+[submodule "contrib/kmbeamer"]
+	path = contrib/kmbeamer
+	url = https://github.com/kmaed/kmbeamer.git

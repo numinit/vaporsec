@@ -1,6 +1,6 @@
 SRC=4realz.tex
 TRG=$(SRC:.tex=.pdf)
-TEX=xelatex -shell-escape
+TEX=xelatex
 export TEXINPUTS=../contrib/kmbeamer:./tex:
 
 .SUFFIXES: .tex .pdf
