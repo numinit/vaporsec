@@ -2,9 +2,17 @@
 
 \documentclass{beamer}
 
+\usepackage{graphicx}
+\graphicspath{ {include/images/} }
+\usepackage{verbatim}
+\usepackage{xspace}
+\usepackage{tikz}
+
+% just for the vaporsec text
 \usepackage{xeCJK}
 
-\usetheme{DarkConsole}
+% \usetheme{DarkConsole}
+\usetheme{Madrid}
 \useinnertheme{rectangles}
 \setbeamercolor{normal text}{bg=black!05}
 
@@ -12,6 +20,13 @@
     \symbol{65334}\symbol{65313}\symbol{65328}\symbol{65327}\symbol{65330}%
     \symbol{65331}\symbol{65317}\symbol{65315}
 }
+
+\newcommand{\Aesthetic}{
+    \symbol{65313}\symbol{65317}\symbol{65331}\symbol{65332}\symbol{65320}%
+    \symbol{65317}\symbol{65332}\symbol{65321}\symbol{65315}
+}
+
+\newcommand{\Aesthetics}{\Aesthetic\symbol{65331}}
 
 \title{For Realz Mode!}
 \subtitle{
@@ -26,12 +41,6 @@
 \begin{frame}
     \titlepage
 \end{frame}
-
-\begin{frame}
-    \frametitle{Outline}
-    \tableofcontents[]
-\end{frame}
-
 
 \include{include/intro}
 \include{include/part1}
