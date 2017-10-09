@@ -101,14 +101,15 @@
     \node [anchor=west] at (#1.east) (#2) {\texttt{#3}};%
 }
 
-\newcommand{\Xmm}[1]{
-    \getargsC{#1}
+\newcommand{\Xmm}[2]{%
+    \getargsC{#2}%
+    \raisebox{0.5em}{\texttt{xmm#1}:\xspace}%
     \begin{tikzpicture}[%
         every node/.style={%
-            minimum width=1.75em,
-            minimum height=1.15em,
-            text height=1em,
-            text depth=.15em,
+            minimum width=1.5em,
+            minimum height=0.75em,
+            text height=0.75em,
+            text depth=0.25em,
             outer sep=0pt,
             draw=black,
             semithick
@@ -137,15 +138,16 @@
 
 \newcommand{\Right}[1]{\textcolor<5->{orange}{#1}}
 
-\begin{frame}{Understanding the irreversible transform}
+\begin{frame}{Packed Sum of Absolute Differences of Bytes in Word}
+    \framesubtitle{That's a mouthful\ldots}
     \begin{center}
-        \Xmm{0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15} \pause \\
-        {\em (minus)} \\
-        \Xmm{15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0} \pause \\
-        $\downarrow$ \\
-        \Xmm{-15 -13 -11 -9 -7 -5 -3 -1 1 3 5 7 9 11 13 15} \pause \\
-        {\em (absolute values)} \\
-        \Xmm{%
+        \Xmm{0}{0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15} \pause \\
+        \raisebox{0.3em}{\scriptsize\em (minus)} \\
+        \Xmm{1}{15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0} \pause \\
+        \raisebox{0.3em}{\scriptsize $\downarrow$} \\
+        \Xmm{0}{-15 -13 -11 -9 -7 -5 -3 -1 1 3 5 7 9 11 13 15} \pause \\
+        \raisebox{0.3em}{\scriptsize\em (absolute values)} \\
+        \Xmm{0}{%
             \Left{15}
             \Left{13}
             \Left{11}
@@ -163,8 +165,8 @@
             \Right{13}
             \Right{15}
         } \pause \\
-        {\em (16-bit sums)} \\
-        \Xmm{0 0 0 0 0 0 \Left{64} \Left{0} 0 0 0 0 0 0 \Right{64} \Right{0}}\\
+        \raisebox{0.3em}{\scriptsize\em (16-bit sums)} \\
+        \Xmm{0}{0 0 0 0 0 0 \Left{64} \Left{0} 0 0 0 0 0 0 \Right{64} \Right{0}}\\
         \pause
         \begin{alertblock}{It's hard to go back\ldots}
             If you just have the result, you have to find two sets of eight
@@ -173,6 +175,8 @@
         \end{alertblock}
     \end{center}
 \end{frame}
+
+\begin{comment}
 
 \begin{frame}{Irreversible transforms and hash functions}
     \framesubtitle{It's only sort of magic}
@@ -194,8 +198,6 @@
         message back once you start scrambling it.}
     \end{block}
 \end{frame}
-
-\begin{comment}
 
 \begin{frame}{But, this is a CTF\ldots}
     \begin{itemize}
