@@ -46,12 +46,25 @@
 \begin{frame}{First leads}
     \begin{itemize}
         \item<1-> The program asks you to enter 20 characters, and immediately
-                  breaks out if the first 4 characters aren't 'flag'
+                  breaks out if the first 4 characters aren't 'flag' after you
+                  enter character \#20
         \item<2-> We can verify this in a debugger after eyeballing the code
 
         \begin{center}
             \uncover<3-> {\includegraphics[width=0.7\textwidth]{flag-precheck}}
         \end{center}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{As it turns out\ldots}
+    \framesubtitle{After several hours of staring at x86 assembly}
+
+    \begin{itemize}
+        \item<1-> The flag is \alert{hashed} using a \alert{custom algorithm}
+                  implemented with Intel SSE instructions
+        \item<2-> {\em Ugh\ldots}
+        \item<3-> We have to find an input to the hash algorithm that hashes
+                  to the same value stored in the boot sector
     \end{itemize}
 \end{frame}
 
@@ -62,36 +75,106 @@
 
     \begin{itemize}
         \item<2-> movaps\uncover<3->{: Moves to/from/between XMM registers}
-        \item<2-> andps\uncover<3->{: Performs bitwise AND between XMM
-                                      registers}
-        \item<2-> pshufd\uncover<3->{: Shuffles 32-bit words in XMM registers}
-        \item<2-> psadbw\uncover<3->{: Sums absolute values of differences
-                                       between bytes (it's as crazy as it
-                                       sounds)}
+        \item<2-> \alert<4->{andps}\uncover<3->{: Performs bitwise AND between
+                                                XMM registers}
+        \item<2-> pshufd\uncover<3->{: Reorders 32-bit words in XMM registers}
+        \item<2-> \alert<4->{psadbw}\uncover<3->{: Sums absolute values of
+                                                 differences between bytes
+                                                 (it's as crazy as it sounds)}
     \end{itemize}
 
-    \begin{block}{Note}
+    \begin{block}<1->{Note}
         SSE2 instructions operate on XMM registers, which are 128 bits
         (16 bytes) wide.
     \end{block}
+
+    \begin{alertblock}<4>{Question}
+        Why are these instructions useful for writing a hash function (even if
+        it's a bad hash function that we can break?)
+    \end{alertblock}
 \end{frame}
 
-\begin{comment}
-% commented out for now, broke the flow of the presentation
+\newcommand{\StartCell}[2]{
+    \node at (0,0) (#1) {\texttt{#2}};%
+}
+\newcommand{\Cell}[3]{
+    \node [anchor=west] at (#1.east) (#2) {\texttt{#3}};%
+}
 
-\begin{frame}{As it turns out\ldots}
-    \begin{itemize}
-        \item<1-> The flag is hashed, (and this isn't a surprise\ldots{} why?)
-            % because the hashed flag can be stored in the program without
-            % storing the actual flag
-        \item<2-> The hash algorithm is custom
-        \item<3-> The custom hash algorithm is almost entirely implemented
-                  using Intel AVX vector instructions
-        \item<4-> Ugh\ldots
-    \end{itemize}
+\newcommand{\Xmm}[1]{
+    \getargsC{#1}
+    \begin{tikzpicture}[%
+        every node/.style={%
+            minimum width=1.75em,
+            minimum height=1.15em,
+            text height=1em,
+            text depth=.15em,
+            outer sep=0pt,
+            draw=black,
+            semithick
+        }
+    ]%
+        \StartCell{A}{\argi}%
+        \Cell{A}{B}{\argii}%
+        \Cell{B}{C}{\argiii}%
+        \Cell{C}{D}{\argiv}%
+        \Cell{D}{E}{\argv}%
+        \Cell{E}{F}{\argvi}%
+        \Cell{F}{G}{\argvii}%
+        \Cell{G}{H}{\argviii}%
+        \Cell{H}{I}{\argix}%
+        \Cell{I}{J}{\argx}%
+        \Cell{J}{K}{\argxi}%
+        \Cell{K}{L}{\argxii}%
+        \Cell{L}{M}{\argxiii}%
+        \Cell{M}{N}{\argxiv}%
+        \Cell{N}{O}{\argxv}%
+        \Cell{O}{P}{\argxvi}%
+    \end{tikzpicture}%
+}
+
+\newcommand{\Left}[1]{\textcolor<5->{red}{#1}}
+
+\newcommand{\Right}[1]{\textcolor<5->{orange}{#1}}
+
+\begin{frame}{Understanding the irreversible transform}
+    \begin{center}
+        \Xmm{0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15} \pause \\
+        {\em (minus)} \\
+        \Xmm{15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0} \pause \\
+        $\downarrow$ \\
+        \Xmm{-15 -13 -11 -9 -7 -5 -3 -1 1 3 5 7 9 11 13 15} \pause \\
+        {\em (absolute values)} \\
+        \Xmm{%
+            \Left{15}
+            \Left{13}
+            \Left{11}
+            \Left{9}
+            \Left{7}
+            \Left{5}
+            \Left{3}
+            \Left{1}
+            \Right{1}
+            \Right{3}
+            \Right{5}
+            \Right{7}
+            \Right{9}
+            \Right{11}
+            \Right{13}
+            \Right{15}
+        } \pause \\
+        {\em (16-bit sums)} \\
+        \Xmm{0 0 0 0 0 0 \Left{64} \Left{0} 0 0 0 0 0 0 \Right{64} \Right{0}}\\
+        \pause
+        \begin{alertblock}{It's hard to go back\ldots}
+            If you just have the result, you have to find two sets of eight
+            bytes where the absolute values of their differences sum to 64
+            (and there are many)
+        \end{alertblock}
+    \end{center}
 \end{frame}
 
-\begin{frame}{What typically goes into a hash function?}
+\begin{frame}{Irreversible transforms and hash functions}
     \framesubtitle{It's only sort of magic}
     \begin{itemize}
         \item<1-> Hash functions are usually defined as
@@ -99,12 +182,11 @@
                   $x$ is the message, and $\ell$ is some fixed number of bits
         \item<2-> The 'seed' is some public value used to initialize the hash
                   function's state
-        \item<3-> Generally, there are a series of repeated 'reductions' meant
-                  to take the message and perform some sort of irreversible
-                  transform on it one block at a time
+        \item<3-> There are a series of repeated 'reductions' meant to take the
+                  message and perform some sort of irreversible transform on it
+                  one block at a time
     \end{itemize}
-    \pause \pause \pause
-    \begin{block}{Example}
+    \begin{block}<4->{Example}
         For SHA256, $s$ is the fractional part of the cube roots of the first
         64 primes, $\ell = 256$, and the reductions involve a few non-linear
         functions (i.e. addition/XOR of multiple values, taking the majority of
@@ -112,6 +194,8 @@
         message back once you start scrambling it.}
     \end{block}
 \end{frame}
+
+\begin{comment}
 
 \begin{frame}{But, this is a CTF\ldots}
     \begin{itemize}
