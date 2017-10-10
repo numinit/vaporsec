@@ -166,7 +166,9 @@
             \Right{15}
         } \pause \\
         \raisebox{0.3em}{\scriptsize\em (16-bit sums)} \\
-        \Xmm{0}{0 0 0 0 0 0 \Left{64} \Left{0} 0 0 0 0 0 0 \Right{64} \Right{0}}\\
+        \Xmm{0}{%
+            0 0 0 0 0 0 \Left{64} \Left{0} 0 0 0 0 0 0 \Right{64} \Right{0}
+        } \\
         \pause
         \begin{alertblock}{It's hard to go back\ldots}
             If you just have the result, you have to find two sets of eight
@@ -176,8 +178,83 @@
     \end{center}
 \end{frame}
 
+\newcounter{SudokuRowCount}
+\newcounter{SudokuColCount}
+\newcounter{SudokuColIndex}
+\newcommand{\SudokuRow}[1]{%
+    \setcounter{SudokuColIndex}{0}%
+    \setcounter{SudokuColCount}{1}%
+    \getargsC{#1}%
+    \whiledo{\value{SudokuColIndex} < \narg}{%
+        \pgfmathparse{\value{SudokuColCount} - 0.5}%
+        \edef\x{\pgfmathresult}%
+        \pgfmathparse{\SudokuSize + 0.5 - \value{SudokuRowCount}}%
+        \edef\y{\pgfmathresult}%
+        \stepcounter{SudokuColIndex}%
+        \edef\n{\csname arg\roman{SudokuColIndex}\endcsname}%
+        \node[anchor=center] at (\x, \y) {\texttt{\n}};%
+        \stepcounter{SudokuColCount}%
+    }%
+    \stepcounter{SudokuRowCount}%
+}
+
+\NewEnviron{sudoku}[2]{%
+    \begin{tikzpicture}[
+        scale=#2,
+        every node/.style={%
+            text depth=-0.75ex,
+            text height=0.5ex
+        }
+    ]%
+        \pgfmathsetmacro{\SudokuSize}{pow(#1, 2)}%
+        \draw (0, 0) grid (\SudokuSize, \SudokuSize);%
+        \draw[very thick, scale=#1] (0, 0) grid (#1, #1);%
+        \setcounter{SudokuRowCount}{1}%
+        \BODY
+    \end{tikzpicture}%
+}
+
+\begin{frame}{SAT solvers to the rescue!}
+    \framesubtitle{How to master Sudoku without memorizing strategies}
+    \begin{columns}
+        \column{0.5\textwidth}
+        {\em
+            ``I think a serious case can be made that the decline in the
+            American economy can be blamed on the sapping of the mental energy
+            and productivity of the American workforce that sudoku addiction
+            alone has wrought''
+        } \\
+        \begin{flushright}
+            -- Some Slate writer \\
+        \end{flushright}
+
+        \pause 
+        Notice anything strange about this puzzle?
+        \column{0.5\textwidth}
+        \begin{sudoku}{4}{0.33}
+            \SudokuRow{\alert<3->{d} \alert<3->{c} \alert<3->{6} \alert<3->{1} \alert<3->{9} 0 e b 5 7 3 2 4 8 f a}
+            \SudokuRow{5 8 a 4 f c 2 d 9 0 b e 3 7 6 1}
+            \SudokuRow{2 b 9 7 5 3 6 1 4 8 a f d 0 e c}
+            \SudokuRow{0 3 f e 4 a 8 7 \alert<3->{d} \alert<3->{c} \alert<3->{6} \alert<3->{1} \alert<3->{9} b 2 5}
+            \SudokuRow{8 \alert<3->{d} \alert<3->{c} \alert<3->{6} \alert<3->{1} \alert<3->{9} 3 2 b 5 e 7 0 4 a f}
+            \SudokuRow{b 1 5 0 d 8 c 6 f a 9 4 7 2 3 e}
+            \SudokuRow{9 a 4 f 7 5 0 e 2 3 1 8 b d c 6}
+            \SudokuRow{7 2 e 3 b 4 a f 0 \alert<3->{d} \alert<3->{c} \alert<3->{6} \alert<3->{1} \alert<3->{9} 5 8}
+            \SudokuRow{e 4 \alert<3->{d} \alert<3->{c} \alert<3->{6} \alert<3->{1} \alert<3->{9} 0 a b 2 5 8 f 7 3}
+            \SudokuRow{1 9 8 2 3 7 5 4 e 6 f 0 a c d b}
+            \SudokuRow{f 6 7 a 2 d b c 1 9 8 3 5 e 0 4}
+            \SudokuRow{3 5 0 b a e f 8 7 4 \alert<3->{d} \alert<3->{c} \alert<3->{6} \alert<3->{1} \alert<3->{9} 2}
+            \SudokuRow{a e 3 \alert<3->{d} \alert<3->{c} \alert<3->{6} \alert<3->{1} \alert<3->{9} 8 f 7 b 2 5 4 0}
+            \SudokuRow{6 0 2 5 e b d 3 c 1 4 9 f a 8 7}
+            \SudokuRow{c 7 1 9 8 f 4 5 6 2 0 a e 3 b d}
+            \SudokuRow{4 f b 8 0 2 7 a 3 e 5 \alert<3->{d} \alert<3->{c} \alert<3->{6} \alert<3->{1} \alert<3->{9}}
+        \end{sudoku}
+    \end{columns}
+\end{frame}
+
 \begin{comment}
 
+% might not include this stuff
 \begin{frame}{Irreversible transforms and hash functions}
     \framesubtitle{It's only sort of magic}
     \begin{itemize}
