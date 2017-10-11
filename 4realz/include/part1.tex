@@ -102,3 +102,111 @@
 				}
 	\end{columns}
 \end{frame}
+
+\begin{frame}{Tool Time!\ldots}
+    \framesubtitle{IDA}
+    \begin{columns}
+        \column{0.5\textwidth}
+            \begin{itemize}
+                \item Rebase
+                \uncover<2->{
+                	\item Common ASM
+                	\only<2>{
+         		       	\begin{itemize}
+     	    	       		\item int
+     		           		\item mov
+             		   		\item inc, dec
+                			\item and, or, not, xor...
+                			\item cmp
+	                		\item jmp, jz, jge, jle...
+	                	\end{itemize}
+	                }
+	            }
+	            \uncover<3->{
+	            	\item Registers
+	            	\only<3>{
+         		       	\begin{itemize}
+     	    	       		\item E AX - Accumulator
+     		           		\item E CX - Counter
+             		   		\item E DX - Data
+                			\item E BX - Base
+                			\item E SP - Stack pointer
+	                		\item E BP - Stack base pointer
+	                		\item E SI - Source
+	                		\item E DI - Destination
+	                	\end{itemize}
+	                }
+	            }
+			\end{itemize}
+		\column{0.5\textwidth}
+			\only<1>{
+				\includegraphics[width=\textwidth]{rebase}
+			}
+			\only<2->{
+				\includegraphics[width=\textwidth]{ida-first}
+			}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Disassembly\ldots}
+    \begin{columns}
+        \column{0.5\textwidth}
+            \begin{itemize}
+                \item Look for hints
+                \begin{itemize}
+                	\uncover<2->{
+         	 	      	\item Loops
+	     	       }
+	          	  \uncover<3->{
+	            		\item Comparisons
+	            	}
+	            	\uncover<4->{
+	            		\item Unknowns
+		            }
+				\end{itemize}
+			\end{itemize}
+		\column{0.5\textwidth}
+			\only<2>{
+				\includegraphics[width=\textwidth]{loop}
+			}
+			\only<3>{
+				\includegraphics[width=\textwidth]{cmp1}
+			}
+			\only<4>{
+				\includegraphics[width=\textwidth]{sse}
+			}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Putting it all together\ldots}
+    \begin{columns}
+        \column{0.5\textwidth}
+            \begin{itemize}
+                \item We know that 0x7C6F compares user input to "flag"
+                \uncover<2->{\item There's a bunch of complicated instructions right after that cmp}
+	     	    \uncover<3->{\item We can use gdb and qemu/monitor to see what's happening...}
+	     	    \uncover<4->{\item Now we just have to work backwards from there.}
+			\end{itemize}
+		\column{0.5\textwidth}
+			\only<1>{
+				\includegraphics[width=\textwidth]{cmp1}
+			}
+			\only<2>{
+				\includegraphics[width=\textwidth]{sse}
+			}
+			\only<3->{
+				\includegraphics[width=\textwidth]{reg1}
+			}
+			\uncover<4>{
+				\includegraphics[width=\textwidth]{reg2}
+			}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Other useful tools\ldots that I didn't know about}
+	\begin{itemize}
+		\item Binary Ninja
+ 		\item pwndbg
+ 		\item Radare
+ 	\end{itemize}
+\end{frame}
