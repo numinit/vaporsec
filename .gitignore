@@ -1,5 +1,6 @@
 .DS_Store
 .current
+_minted*
 
 # Editor tempfiles
 *.swo
@@ -20,3 +21,6 @@
 *.pdf
 *.nav
 *.snm
+
+# Python
+*.pyc
