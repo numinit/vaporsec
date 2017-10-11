@@ -2,6 +2,8 @@
 
 \section{Reversing the MBR}
 
+\subsection{RE400 what?}
+
 \begin{frame}{RE400 what?\ldots}
     \begin{columns}
         \column{0.5\textwidth}
@@ -36,6 +38,8 @@
                 {\includegraphics[width=\textwidth]{wikimbr}}
     \end{columns}
 \end{frame}
+
+\subsection{Tools}
 
 \begin{frame}{Tool Time!\ldots}
     \framesubtitle{qemu (gift wrapped)}
@@ -83,8 +87,8 @@
 						\item info reg
 						\uncover<3->{\item info frame}
 						\uncover<4->{\item x /CT 0xADDR - display C units of T type from ADDR
-									\item set {int}0xADDR = 42
-									\item set {char[4]} 0xADDR = "AAA"
+									\item set \{int\}0xADDR = 42
+									\item set \{char[4]\} 0xADDR = "AAA"
 						}
 					}
 				\end{itemize}
@@ -147,6 +151,8 @@
 			}
 	\end{columns}
 \end{frame}
+
+\subsection{Disassembly and reversing}
 
 \begin{frame}{Disassembly\ldots}
     \begin{columns}

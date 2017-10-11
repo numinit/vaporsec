@@ -1,6 +1,8 @@
 %TeX
 
-\section{Finding the flag}
+\section{Getting the flag}
+
+\subsection{Recap}
 
 \begin{frame}{A quick recap\ldots}
     \begin{columns}
@@ -43,6 +45,8 @@
     \end{columns}
 \end{frame}
 
+\subsection{First leads}
+
 \begin{frame}{First leads}
     \begin{itemize}
         \item<1-> The program asks you to enter 20 characters, and immediately
@@ -61,12 +65,15 @@
 
     \begin{itemize}
         \item<1-> The flag is \alert{hashed} using a \alert{custom algorithm}
-                  implemented with Intel SSE instructions
+                  implemented with Intel SSE instructions (and this isn't very
+                  surprising)
         \item<2-> {\em Ugh\ldots}
         \item<3-> We have to find an input to the hash algorithm that hashes
                   to the same value that's stored in the boot sector
     \end{itemize}
 \end{frame}
+
+\subsection{Diving into x86 instructions}
 
 \begin{frame}{Suddenly, SSE2 instructions}
     \framesubtitle{``My Intel CPU can do {\em that?}''}
@@ -181,7 +188,7 @@
     \framesubtitle{That's a mouthful\ldots}
     \begin{center}
         \PsadbwIllustration{1-}{2-}{3-}{4-}{5-}
-        \pause
+        \pause \pause \pause \pause \pause
         \begin{alertblock}{It's hard to go back\ldots}
             If you just have the result, you have to find two sets of eight
             bytes where the absolute values of their differences sum to 64
@@ -247,6 +254,8 @@
     \end{sudoku}
 }
 
+\subsection{Introduction to SMT solvers}
+
 \begin{frame}{SAT solvers to the rescue!}
     \framesubtitle{How to master Sudoku without memorizing strategies}
     \begin{columns}
@@ -307,10 +316,16 @@
             can be used to solve certain hard\textsuperscript{*} problems}
         } \pause \\
         * hard, meaning ``NP-complete'' \pause \\
-        \vspace{0.5in}
+        \vspace{0.25in}
         {\Large
             The SMT query itself can be constructed from a language like
             Python, C, or even raw x86 assembly
+        } \pause \\
+        \vspace{0.25in}
+        {\Large
+            If there's one thing you should take from this presentation:
+            SMT solvers are tools for solving constraint problems, just like
+            SQL is a tool for making sense of large amounts of data
         }
     \end{center}
 \end{frame}
@@ -356,6 +371,8 @@
     }%
 }
 
+\subsection{Generating sudoku puzzles}
+
 \begin{frame}{Back to our sudoku\ldots}
     How do you create a hexadoku puzzle out of thin air with Z3? \pause \\
 
@@ -387,7 +404,7 @@
     \PythonBox{Initial values}{05-initial}
 \end{frame}
 
-\begin{frame}{Telling z3 to start solving, and printing the result}
+\begin{frame}{Telling z3 to start solving}
     This will take a little bit of time \pause \\
 
     \PythonBox{Start solving!}{06-start-solving}
@@ -409,19 +426,198 @@
     \end{center}
 \end{frame}
 
+\subsection{Translating x86 assembly to a SMT solver}
+
 \begin{frame}{Constraint solving our boot sector}
     ``Hey, Z3, I want you to find me input values that, after being put through
-    this crazy operation, end up being equal to the ones stored in the boot
-    sector''
+    this crazy operation (among other things), end up being equal to the ones
+    stored in the boot sector''
     \\
     \begin{center}
         \PsadbwIllustration{1-}{1-}{1-}{1-}{1-}
     \end{center}
 \end{frame}
 
-\begin{comment}
+\begin{frame}{Useful primitives}
+    \begin{itemize}
+        \item We need to implement the pshufd and psadbw x86 instructions
+              in Z3
+        \item Documentation at \url{http://x86.renejeschke.de} already
+              provides us pseudocode for these instructions
+    \end{itemize}
 
-% might not include this stuff
+    \begin{center}
+        \includegraphics[width=0.75\textwidth]{pshufd-docs}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Useful constraints}
+    The flag looks like \texttt{flag\{some\_text\_here\}}, but the
+    word ``flag'' is chopped off before it's loaded into an XMM register,
+    so the first and last characters of the remaining 16 are \texttt{\{} and
+    \texttt{\}}, respectively \\ \pause
+
+    This may not look like much, but we already have a few constraints\ldots
+
+    \PythonBox{Initial constraints}{10-useful-constraints}
+\end{frame}
+
+\newcommand{\WA}[1]{%
+    \textcolor{red}{#1}%
+}
+
+\newcommand{\WB}[1]{%
+    \textcolor{blue}{#1}%
+}
+
+\newcommand{\WC}[1]{%
+    \textcolor{orange}{#1}%
+}
+
+\newcommand{\WD}[1]{%
+    \textcolor{magenta}{#1}%
+}
+
+\begin{frame}{Implementing the hash function's word shuffling}
+    The flag is initially shuffled using the pshufd instruction; create a new
+    constraint (``shuf'') that just describes the permutation \\ \pause
+
+    \begin{center}
+        \Xmm{0}{\WA{\{} \WA{A} \WA{B} \WA{C} \WB{D} \WB{E} \WB{F} \WB{G} \WC{H} \WC{I} \WC{J} \WC{K} \WD{L} \WD{M} \WD{N} \WD{\}}}
+        \raisebox{0.3em}{\scriptsize $\downarrow$\xspace\texttt{pshufd xmm0, xmm0, 0x1e}} \\
+        \Xmm{0}{\WC{H} \WC{I} \WC{J} \WC{K} \WD{L} \WD{M} \WD{N} \WD{\}} \WB{D} \WB{E} \WB{F} \WB{G} \WA{\{} \WA{A} \WA{B} \WA{C}}
+    \end{center}
+    \pause
+    \PythonBox{Implementing the word shuffling (pshufd)}{11-pshufd}
+\end{frame}
+
+\begin{frame}{Implementing the hash function's bitmasking}
+    For each of the hash function's 8 rounds, a different mask is applied to
+    the shuffled value, so create another set of intermediate values called
+    ``masked'' \\ \pause
+    \PythonBox{Implementing the masking operation (andps)}{12-masking}
+\end{frame}
+
+\begin{frame}{Implementing the packed sum of absolute differences}
+    A single x86 instruction turned into like 30 lines of Python\ldots \\
+    \pause
+    \PythonBox{Implementing psadbw (greatly simplified; trust me, it's nasty)}{13-psadbw}
+\end{frame}
+
+\begin{frame}{And the rest of the algorithm\ldots}
+    \framesubtitle{AKA: continuing to give up on explaining the details}
+    \begin{columns}
+        \column{0.5\textwidth}
+
+        \begin{itemize}
+            \item Would be boring to present, since there were a few arbitrary
+                  things thrown into the challenge that made it deliberately
+                  more annoying to reverse-engineer
+            \item \ldots\xspace Like x86 tricks where they loaded a register
+                  like \texttt{eax} and used \texttt{ah} and \texttt{al}
+                  backwards
+            \item Not to mention that the algorithm has to run for 8
+                  iterations\ldots
+        \end{itemize}
+        \column{0.5\textwidth}
+        \includegraphics[width=\textwidth]{owl}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Once we've got the constraints defined\ldots}
+    Now, we can solve it as usual, and retrieve the flag from the model \\
+    \pause
+    \PythonBox{Solving for the flag}{14-start-solving}
+\end{frame}
+
+\begin{frame}{Run it, and\ldots}
+    \begin{center}
+        {\Large
+            \texttt{Formula was satisfiable.} \\
+            \texttt{flag\{ D`?T\textbackslash{}B?3F>~P`\}}
+        }
+    \end{center}
+\end{frame}
+
+\subsection{Debugging your keygen}
+
+\begin{frame}{Does it work?}
+    \begin{columns}
+        \column{0.5\textwidth}
+        Well, no
+
+        \column{0.5\textwidth}
+        \includegraphics[width=\textwidth]{one-round-entry} \\
+        \includegraphics[width=\textwidth]{one-round-invalid}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Does it work?}
+    \begin{columns}
+        \column{0.5\textwidth}
+        But, using IDA's debugger and setting breakpoints, we see that it
+        got through the first round of the hash function, but failed on the
+        second - turns out, we forgot to solve the remaining rounds
+
+        \column{0.5\textwidth}
+        \includegraphics[width=\textwidth]{one-round-success}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Debugging SMT solvers}
+    \begin{itemize}
+        \item<1-> Baby steps - try to get a satisfiable formula first, then
+                  focus on making it the {\em correct} satisfiable formula
+        \item<2-> If you're getting unsatisfiable, make sure you're not
+                  overconstraining (i.e. assuming that the flag only contains
+                  letters)
+        \item<3-> If you're reimplementing some piece of code in Z3, make sure
+                  its flow matches the original's
+        \begin{itemize}
+            \item<4-> Match control structures as faithfully as possible
+            \item<5-> Use Python functions to implement complex behaviors like
+                      Intel SSE2 instructions with the correct series of 
+                      \texttt{smt.add} calls
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{After some refactoring\ldots}
+    \begin{center}
+        {\Large
+            \texttt{Formula was satisfiable.} \\
+            \texttt{flag\{4e@alz\_p\%Z/TnW\}} \pause \\
+            \vspace{0.5in}
+            And, it got through 6 out of the 8 rounds this time! \pause \\
+            \ldots\xspace But, it returned unsatisfiable when trying to solve
+            for 7 or 8
+        }
+    \end{center}
+\end{frame}
+
+\begin{frame}{Typos are your worst enemy}
+    \framesubtitle{Spot the difference\ldots}
+    \begin{columns}
+        \column{0.3\textwidth}
+        \PythonBox{What I typed}{20-incorrect-constants}
+        \column{0.1\textwidth}
+        \column{0.6\textwidth}
+        \PythonBox{What I meant}{21-correct-constants}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{After fixing the typo\ldots}
+    \begin{center}
+        {\Large
+            \texttt{Formula was satisfiable.} \\
+            \texttt{flag\{4r3alz\_m0d3\_y0\}} \\
+        }
+        \pause \vspace{0.5in}
+        \includegraphics[width=0.75\textwidth]{flag-correct}
+    \end{center}
+\end{frame}
+
+\begin{comment}
 \begin{frame}{Irreversible transforms and hash functions}
     \framesubtitle{It's only sort of magic}
     \begin{itemize}
@@ -441,15 +637,5 @@
         three bits, etc). The idea is that {\em you can't get the original
         message back once you start scrambling it.}
     \end{block}
-\end{frame}
-
-\begin{frame}{But, this is a CTF\ldots}
-    \begin{itemize}
-        \item<1-> They wouldn't hash the flag with a strong hash function and
-                  expect us to break it
-        \item<2-> The hash function has to fit in 512 bytes of x86 instructions
-        \item<3-> So\ldots{} we can expect that we have to reverse engineer the
-                  hash function to recover the flag
-    \end{itemize}
 \end{frame}
 \end{comment}
