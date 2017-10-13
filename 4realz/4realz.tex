@@ -1,16 +1,64 @@
 %TeX
 
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 
+\usepackage{graphicx}
+\graphicspath{{include/images/}}
+\usepackage{verbatim}
+\usepackage{xspace}
+\usepackage{readarray}
+\usepackage{keyval}
+\usepackage{environ}
+\usepackage{tikz}
+\usepackage{ragged2e}
+\usepackage{hyperref}
+\usepackage[export]{adjustbox}
+
+% python code examples
+\usepackage{minted}
+
+% just for the vaporsec text
 \usepackage{xeCJK}
 
-\usetheme{DarkConsole}
+% \usetheme{DarkConsole}
+\usetheme{Madrid}
 \useinnertheme{rectangles}
 \setbeamercolor{normal text}{bg=black!05}
+
+\makeatletter
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertsection
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertsubsection
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
 
 \newcommand{\VaporSec}{
     \symbol{65334}\symbol{65313}\symbol{65328}\symbol{65327}\symbol{65330}%
     \symbol{65331}\symbol{65317}\symbol{65315}
+}
+
+\newcommand{\Aesthetic}{
+    \symbol{65313}\symbol{65317}\symbol{65331}\symbol{65332}\symbol{65320}%
+    \symbol{65317}\symbol{65332}\symbol{65321}\symbol{65315}
+}
+
+\newcommand{\Aesthetics}{\Aesthetic\symbol{65331}}
+
+\newcommand{\Graphic}[1]{%
+    \centerline{\includegraphics[
+        width=\textwidth,max height=0.8\textheight,keepaspectratio
+    ]{#1}}%
 }
 
 \title{For Realz Mode!}
@@ -18,11 +66,12 @@
     Reversing an MBR from the CSAW CTF\\
     {\em (and how to write a keygen with a SAT solver)}
 }
-\author{@t0x0 \and @numinit}
-\institute{\VaporSec}
-\date{2017-XX-YY}
+\author{t0x0 \and numinit}
+\institute{DC858, DC619, and \VaporSec}
+\date{2017-10-11}
 
 \begin{document}
+
 \begin{frame}
     \titlepage
 \end{frame}
@@ -32,9 +81,9 @@
     \tableofcontents[]
 \end{frame}
 
-
 \include{include/intro}
 \include{include/part1}
 \include{include/part2}
+\include{include/conclusion}
 
 \end{document}
