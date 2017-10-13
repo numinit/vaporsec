@@ -5,8 +5,6 @@
 # ffffffff 00ffffff ffffffff 00ffffff
 # ... etc.
 mask = [0x00 if i == round else 0xff for i in range(8)] * 2
-masked = [
-    z3.BitVec('m_%d_%d' % (round, i), 8) for i in range(16)
-]
+masked = [z3.BitVec('masked_%d_%d' % (round, i), 8) for i in range(16)]
 for i in range(16):
     smt.add(masked[i] == (shuf[i] & mask[i]))

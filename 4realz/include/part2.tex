@@ -17,7 +17,7 @@
             \item<4-> So, where is it?
         \end{itemize}
         \column{0.5\textwidth}
-        \includegraphics[width=\textwidth]{enter-flag}
+        \Graphic{enter-flag}
     \end{columns}
 \end{frame}
 
@@ -38,9 +38,9 @@
         \end{itemize}
         \column{0.5\textwidth}
         \begin{tikzpicture}
-            \only<1> {\node (cfg) {\includegraphics[width=\textwidth]{cfg}};}
+            \only<1> {\node (cfg) {\Graphic{cfg}};}
             \uncover<2-> {\node (cfga) 
-                {\includegraphics[width=\textwidth]{cfg-annotated}};}
+                {\Graphic{cfg-annotated}};}
         \end{tikzpicture}
     \end{columns}
 \end{frame}
@@ -190,9 +190,8 @@
         \PsadbwIllustration{1-}{2-}{3-}{4-}{5-}
         \pause \pause \pause \pause \pause
         \begin{alertblock}{It's hard to go back\ldots}
-            If you just have the result, you have to find two sets of eight
-            bytes where the absolute values of their differences sum to 64
-            (and there are many)
+            You have to find two sets of 8 bytes where the absolute values of
+            their differences sum to 64
         \end{alertblock}
     \end{center}
 \end{frame}
@@ -218,19 +217,21 @@
 }
 
 \NewEnviron{sudoku}[2]{%
-    \begin{tikzpicture}[
-        scale=#2,
-        every node/.style={%
-            text depth=-0.75ex,
-            text height=0.5ex
-        }
-    ]%
-        \pgfmathsetmacro{\SudokuSize}{pow(#1, 2)}%
-        \draw (0, 0) grid (\SudokuSize, \SudokuSize);%
-        \draw[very thick, scale=#1] (0, 0) grid (#1, #1);%
-        \setcounter{SudokuRowCount}{1}%
-        \BODY
-    \end{tikzpicture}%
+    \begin{center}%
+        \begin{tikzpicture}[
+            scale=#2,
+            every node/.style={%
+                text depth=-0.75ex,
+                text height=0.5ex
+            }
+        ]%
+            \pgfmathsetmacro{\SudokuSize}{pow(#1, 2)}%
+            \draw (0, 0) grid (\SudokuSize, \SudokuSize);%
+            \draw[very thick, scale=#1] (0, 0) grid (#1, #1);%
+            \setcounter{SudokuRowCount}{1}%
+            \BODY
+        \end{tikzpicture}%
+    \end{center}
 }
 
 \newcommand{\DefconSudoku}[2]{%
@@ -456,9 +457,8 @@
     The flag looks like \texttt{flag\{some\_text\_here\}}, but the
     word ``flag'' is chopped off before it's loaded into an XMM register,
     so the first and last characters of the remaining 16 are \texttt{\{} and
-    \texttt{\}}, respectively \\ \pause
-
-    This may not look like much, but we already have a few constraints\ldots
+    \texttt{\}}, respectively. \pause This may not look like much, but we
+    already have a few constraints\ldots
 
     \PythonBox{Initial constraints}{10-useful-constraints}
 \end{frame}
@@ -479,16 +479,18 @@
     \textcolor{magenta}{#1}%
 }
 
-\begin{frame}{Implementing the hash function's word shuffling}
+\begin{frame}{Understanding the hash function's word shuffling}
     The flag is initially shuffled using the pshufd instruction; create a new
     constraint (``shuf'') that just describes the permutation \\ \pause
 
     \begin{center}
-        \Xmm{0}{\WA{\{} \WA{A} \WA{B} \WA{C} \WB{D} \WB{E} \WB{F} \WB{G} \WC{H} \WC{I} \WC{J} \WC{K} \WD{L} \WD{M} \WD{N} \WD{\}}}
+        \Xmm{0}{\WA{\{} \WA{A} \WA{B} \WA{C} \WB{D} \WB{E} \WB{F} \WB{G} \WC{H} \WC{I} \WC{J} \WC{K} \WD{L} \WD{M} \WD{N} \WD{\}}} \\
         \raisebox{0.3em}{\scriptsize $\downarrow$\xspace\texttt{pshufd xmm0, xmm0, 0x1e}} \\
-        \Xmm{0}{\WC{H} \WC{I} \WC{J} \WC{K} \WD{L} \WD{M} \WD{N} \WD{\}} \WB{D} \WB{E} \WB{F} \WB{G} \WA{\{} \WA{A} \WA{B} \WA{C}}
+        \Xmm{0}{\WC{H} \WC{I} \WC{J} \WC{K} \WD{L} \WD{M} \WD{N} \WD{\}} \WB{D} \WB{E} \WB{F} \WB{G} \WA{\{} \WA{A} \WA{B} \WA{C}} \\
     \end{center}
-    \pause
+\end{frame}
+
+\begin{frame}{Implementing the hash function's word shuffling}
     \PythonBox{Implementing the word shuffling (pshufd)}{11-pshufd}
 \end{frame}
 
@@ -521,7 +523,7 @@
                   iterations\ldots
         \end{itemize}
         \column{0.5\textwidth}
-        \includegraphics[width=\textwidth]{owl}
+        \Graphic{owl}
     \end{columns}
 \end{frame}
 
@@ -548,8 +550,8 @@
         Well, no
 
         \column{0.5\textwidth}
-        \includegraphics[width=\textwidth]{one-round-entry} \\
-        \includegraphics[width=\textwidth]{one-round-invalid}
+        \Graphic{one-round-entry} \\
+        \Graphic{one-round-invalid}
     \end{columns}
 \end{frame}
 
@@ -561,7 +563,7 @@
         second - turns out, we forgot to solve the remaining rounds
 
         \column{0.5\textwidth}
-        \includegraphics[width=\textwidth]{one-round-success}
+        \Graphic{one-round-success}
     \end{columns}
 \end{frame}
 
