@@ -6,7 +6,7 @@
 
 \begin{frame}{RE400 what?\ldots}
     \begin{columns}
-        \column{0.5\textwidth}
+        \column{0.4\textwidth}
 	        \begin{itemize}
                 \item Challenge worth 400 points
                 \item Reverse Engineering category
@@ -16,7 +16,7 @@
                 	\item \ldots from an x86 system
         	    \end{itemize}
             \end{itemize}
-        \column{0.5\textwidth}
+        \column{0.6\textwidth}
                 {\Graphic{re400}}
     \end{columns}
 \end{frame}
@@ -44,7 +44,7 @@
 \begin{frame}{Tool Time!\ldots}
     \framesubtitle{qemu (gift wrapped)}
     \begin{columns}
-        \column{0.5\textwidth}
+        \column{0.3\textwidth}
             \only<1> {
               	\begin{itemize}
              		\item -s (gdb)
@@ -61,7 +61,7 @@
     	    	    \end{itemize}
         	    \end{itemize}
         	}
-        \column{0.5\textwidth}
+        \column{0.7\textwidth}
             \only<1>{\Graphic{launch-qemu}\newline\newline
             		\Graphic{qemu-vnc}
 			}
@@ -72,7 +72,7 @@
 \begin{frame}{Tool Time!\ldots}
     \framesubtitle{gdb}
     \begin{columns}
-        \column{0.5\textwidth}
+        \column{0.4\textwidth}
                 \begin{itemize}
                 	\only<1>{
 						\item target remote localhost:1234
@@ -86,13 +86,13 @@
 					\only<2->{
 						\item info reg
 						\uncover<3->{\item info frame}
-						\uncover<4->{\item x /CT 0xADDR - display C units of T type from ADDR
+						\uncover<4->{\item x /CT 0xADDR\newline   display C units of T type from ADDR
 									\item set \{int\}0xADDR = 42
 									\item set \{char[4]\} 0xADDR = "AAA"
 						}
 					}
 				\end{itemize}
-		\column{0.5\textwidth}
+		\column{0.6\textwidth}
 				\only<1>{\Graphic{launch-gdb}\newline\newline
 						\Graphic{gdb-target}}
 				\only<2>{\Graphic{gdb-info-reg-1}}
@@ -110,7 +110,7 @@
 \begin{frame}{Tool Time!\ldots}
     \framesubtitle{IDA}
     \begin{columns}
-        \column{0.5\textwidth}
+        \column{0.3\textwidth}
             \begin{itemize}
                 \item Rebase
                 \uncover<2->{
@@ -142,7 +142,7 @@
 	                }
 	            }
 			\end{itemize}
-		\column{0.5\textwidth}
+		\column{0.7\textwidth}
 			\only<1>{
 				\Graphic{rebase}
 			}
@@ -156,7 +156,7 @@
 
 \begin{frame}{Disassembly\ldots}
     \begin{columns}
-        \column{0.5\textwidth}
+        \column{0.3\textwidth}
             \begin{itemize}
                 \item Look for hints
                 \begin{itemize}
@@ -171,7 +171,7 @@
 		            }
 				\end{itemize}
 			\end{itemize}
-		\column{0.5\textwidth}
+		\column{0.7\textwidth}
 			\only<2>{
 				\Graphic{loop}
 			}
@@ -186,14 +186,14 @@
 
 \begin{frame}{Putting it all together\ldots}
     \begin{columns}
-        \column{0.5\textwidth}
+        \column{0.4\textwidth}
             \begin{itemize}
                 \item We know that 0x7C6F compares user input to "flag"
                 \uncover<2->{\item There's a bunch of complicated instructions right after that cmp}
 	     	    \uncover<3->{\item We can use gdb and qemu/monitor to see what's happening...}
 	     	    \uncover<4->{\item Now we just have to work backwards from there.}
 			\end{itemize}
-		\column{0.5\textwidth}
+		\column{0.6\textwidth}
 			\only<1>{
 				\Graphic{cmp1}
 			}
