@@ -27,10 +27,9 @@
         \begin{itemize}
             \item<1-> Open the file in your favorite disassembler (e.g. IDA);
                       rebase at \texttt{0x7c00}
-            \item<2-> We can visally pick out three sections:
+            \item<2-> We can visually pick out three sections:
             \begin{itemize}
-                \item<2-> Init code (responsible for the protected
-                          mode transition)
+                \item<2-> Init code (responsible for enabling SSE instructions)
                 \item<2-> Display code (identifiable by a large number of
                           \texttt{int} instructions)
                 \item<2-> Some other code that uses Intel SSE2 instructions
@@ -318,12 +317,12 @@
             can be used to solve certain hard\textsuperscript{*} problems}
         } \pause \\
         * hard, meaning ``NP-complete'' \pause \\
-        \vspace{0.25in}
+        \vspace{0.3in}
         {\Large
             The SMT query itself can be constructed from a language like
             Python, C, or even raw x86 assembly
         } \pause \\
-        \vspace{0.25in}
+        \vspace{0.3in}
         {\Large
             If there's one thing you should take from this presentation:
             SMT solvers are tools for solving constraint problems, just like
@@ -332,7 +331,7 @@
     \end{center}
 \end{frame}
 
-\begin{frame}{Modern SMT solvers and symbolic execution engines}
+\begin{frame}{Some modern SMT solvers and symbolic execution engines}
     \begin{itemize}
         \item<1-> \alert<4->{Z3} (SMT)
         \begin{itemize}
@@ -520,7 +519,7 @@
                   like \texttt{eax} and used \texttt{ah} and \texttt{al}
                   backwards
             \item Not to mention that the algorithm has to run for 8
-                  iterations\ldots
+                  rounds, so the logic repeats 8 times\ldots
         \end{itemize}
         \column{0.5\textwidth}
         \Graphic{owl}
@@ -542,7 +541,7 @@
     \end{center}
 \end{frame}
 
-\subsection{Debugging your keygen}
+\subsection{Debugging our keygen}
 
 \begin{frame}{Does it work?}
     \begin{columns}
@@ -585,38 +584,48 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{After some refactoring\ldots}
+\begin{frame}{After refactoring to support multiple rounds\ldots}
+    \framesubtitle{We're getting closer\ldots}
     \begin{center}
         {\Large
+            \texttt{Using 6 rounds.} \\
             \texttt{Formula was satisfiable.} \\
             \texttt{flag\{4e@alz\_p\%Z/TnW\}} \pause \\
-            \vspace{0.5in}
-            And, it got through 6 out of the 8 rounds this time! \pause \\
-            \ldots\xspace But, it returned unsatisfiable when trying to solve
-            for 7 or 8
+            \vspace{0.3in}
+            And, it got through 3 out of the 8 rounds this time! \pause \\
+            \vspace{0.3in}
+            \ldots\xspace But, we asked it to do 6, because the solver couldn't
+            solve for 7 or 8 \pause \\
+            \vspace{0.3in}
+            Something must be going wrong after round 3
         }
     \end{center}
 \end{frame}
 
 \begin{frame}{Typos are your worst enemy}
-    \framesubtitle{Spot the difference\ldots}
+    \framesubtitle{What about round 4?}
     \begin{columns}
         \column{0.3\textwidth}
         \PythonBox{What I typed}{20-incorrect-constants}
         \column{0.1\textwidth}
+        \begin{center}
+            $\rightarrow$
+        \end{center}
         \column{0.6\textwidth}
         \PythonBox{What I meant}{21-correct-constants}
     \end{columns}
 \end{frame}
 
 \begin{frame}{After fixing the typo\ldots}
+    \framesubtitle{It gets through all 8 rounds!}
     \begin{center}
         {\Large
+            \texttt{Using 8 rounds.} \\
             \texttt{Formula was satisfiable.} \\
             \texttt{flag\{4r3alz\_m0d3\_y0\}} \\
         }
-        \pause \vspace{0.5in}
-        \includegraphics[width=0.75\textwidth]{flag-correct}
+        \pause \vspace{0.3in}
+        \includegraphics[width=0.7\textwidth]{flag-correct}
     \end{center}
 \end{frame}
 

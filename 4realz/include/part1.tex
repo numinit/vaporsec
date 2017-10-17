@@ -17,7 +17,7 @@
         	    \end{itemize}
             \end{itemize}
         \column{0.6\textwidth}
-                {\Graphic{re400}}
+            \Graphic{re400}
     \end{columns}
 \end{frame}
 
@@ -32,123 +32,120 @@
             	    \item<2-> "expected to contain real mode machine language instructions"
                 	\item<2-> little-endian
                 	\item<2-> loads at 0000:7C00
-	            \end{itemize}                	
+	            \end{itemize}
             \end{itemize}
         \column{0.5\textwidth}
-                {\Graphic{wikimbr}}
+            \Graphic{wikimbr}
     \end{columns}
 \end{frame}
 
 \subsection{Tools}
 
-\begin{frame}{Tool Time!\ldots}
+\begin{frame}[t]{Tool Time!}
     \framesubtitle{qemu (gift wrapped)}
     \begin{columns}
-        \column{0.3\textwidth}
-            \only<1> {
-              	\begin{itemize}
-             		\item -s (gdb)
-                	\item -S (suspend)
-        	       	\item -vnc:1
-	            \end{itemize}
-            }
-            \only<2> {
-             	\begin{itemize}
-            		\item QEMU/Monitor
-              		\begin{itemize}
-	    	        	\item info registers
-    	    	       	\item system reset
-    	    	    \end{itemize}
-        	    \end{itemize}
-        	}
-        \column{0.7\textwidth}
-            \only<1>{\Graphic{launch-qemu}\newline\newline
-            		\Graphic{qemu-vnc}
+        \begin{column}[t]{0.3\textwidth}
+            \begin{itemize}
+                \item<1-> \texttt{-s} (gdb stub)
+                \item<1-> \texttt{-S} (suspend)
+                \item<1-> \texttt{-vnc:1} (enable remote VNC monitor)
+                \item<2-> QEMU/Monitor
+                \begin{itemize}
+                    \item<2-> \texttt{info registers}
+                    \item<2-> \texttt{system reset}
+                \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}[t]{0.7\textwidth}
+            \only<1>{
+                \Graphic{launch-qemu} \newline \newline
+            	\Graphic{qemu-vnc}
 			}
             \only<2>{\Graphic{qemu-info-registers-1}}
+        \end{column}
     \end{columns}
 \end{frame}
 
-\begin{frame}{Tool Time!\ldots}
+\begin{frame}[t]{Tool Time!}
     \framesubtitle{gdb}
     \begin{columns}
-        \column{0.4\textwidth}
-                \begin{itemize}
-                	\only<1>{
-						\item target remote localhost:1234
-						\item set architecture i8086
-							(bootloaders are 16 bit, right?)
-						\item display/i \$pc - print program counter
-						\item br *0xADDR - set breakpoint
-						\item si - run one instruction
-						\item c - continue
-					}
-					\only<2->{
-						\item info reg
-						\uncover<3->{\item info frame}
-						\uncover<4->{\item x /CT 0xADDR\newline   display C units of T type from ADDR
-									\item set \{int\}0xADDR = 42
-									\item set \{char[4]\} 0xADDR = "AAA"
-						}
-					}
-				\end{itemize}
-		\column{0.6\textwidth}
-				\only<1>{\Graphic{launch-gdb}\newline\newline
-						\Graphic{gdb-target}}
-				\only<2>{\Graphic{gdb-info-reg-1}}
-				\only<3>{\Graphic{gdb-info-frame}}
-				\only<4-5>{
-					\uncover<4->{\Graphic{gdb-x-set-1}}
-					\uncover<5->{\Graphic{gdb-x-set-2}}
-				}
-				\only<6>{
-					\Graphic{after-set}
-				}
+        \begin{column}[t]{0.5\textwidth}
+            \begin{itemize}
+                \item<1-> \texttt{target remote localhost:1234}
+                \item<1-> \texttt{set architecture i8086} \\
+                    (bootloaders are 16 bit, right?)
+                \item<1-> \texttt{display/i \$pc} - print program counter
+                \item<1-> \texttt{br *0xADDR} - set breakpoint
+                \item<1-> \texttt{si} - run one instruction
+                \item<1-> \texttt{c} - continue
+                \item<2-> \texttt{info reg} and \texttt{info frame}
+                \item<3-|@uncover> \texttt{x /CT 0xADDR} - display C units of type T
+                \item<3-|@uncover> \texttt{set \{int\}0xADDR} = 42
+                \item<3-|@uncover> \texttt{set \{char[4]\} 0xADDR} = "AAA"
+            \end{itemize}
+        \end{column}
+        \begin{column}[t]{0.5\textwidth}
+            \only<1>{
+                \Graphic{launch-gdb} \newline \newline
+                \Graphic{gdb-target}
+            }
+            \only<2>{\Graphic{gdb-info-reg-1}}
+            \only<3>{\Graphic{gdb-info-frame}}
+            \only<4-5>{
+                \uncover<4->{\Graphic{gdb-x-set-1} \newline \newline}
+                \uncover<5->{\Graphic{gdb-x-set-2}}
+            }
+            \only<6>{
+                \Graphic{after-set}
+            }
+        \end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Tool Time!\ldots}
+\begin{frame}[t]{Tool Time!}
     \framesubtitle{IDA}
     \begin{columns}
-        \column{0.3\textwidth}
+        \begin{column}[t]{0.4\textwidth}
             \begin{itemize}
                 \item Rebase
-                \uncover<2->{
+                \only<2->{
                 	\item Common ASM
                 	\only<2>{
          		       	\begin{itemize}
-     	    	       		\item int
-     		           		\item mov
-             		   		\item inc, dec
-                			\item and, or, not, xor...
-                			\item cmp
-	                		\item jmp, jz, jge, jle...
+                            \item \texttt{int}
+                            \item \texttt{mov}
+                            \item \texttt{inc}, \texttt{dec}
+                            \item \texttt{or}, \href{https://twitter.com/andnxor}{\texttt{and}, \texttt{not}, \texttt{xor}}\ldots
+                            \item \texttt{cmp}
+                            \item \texttt{jmp}, \texttt{jz}, \texttt{jge}, \texttt{jle}\ldots
 	                	\end{itemize}
 	                }
 	            }
-	            \uncover<3->{
+	            \only<3->{
 	            	\item Registers
 	            	\only<3>{
          		       	\begin{itemize}
-     	    	       		\item E AX - Accumulator
-     		           		\item E CX - Counter
-             		   		\item E DX - Data
-                			\item E BX - Base
-                			\item E SP - Stack pointer
-	                		\item E BP - Stack base pointer
-	                		\item E SI - Source
-	                		\item E DI - Destination
+                            \item \texttt{E AX} - Accumulator
+                            \item \texttt{E CX} - Counter
+                            \item \texttt{E DX} - Data
+                            \item \texttt{E BX} - Base
+                            \item \texttt{E SP} - Stack pointer
+                            \item \texttt{E BP} - Stack base pointer
+                            \item \texttt{E SI} - Source
+                            \item \texttt{E DI} - Destination
 	                	\end{itemize}
 	                }
 	            }
 			\end{itemize}
-		\column{0.7\textwidth}
+        \end{column}
+        \begin{column}[t]{0.6\textwidth}
 			\only<1>{
 				\Graphic{rebase}
 			}
-			\only<2->{
+			\uncover<2->{
 				\Graphic{ida-first}
 			}
+        \end{column}
 	\end{columns}
 \end{frame}
 
@@ -162,8 +159,8 @@
                 \begin{itemize}
                 	\uncover<2->{
          	 	      	\item Loops
-	     	       }
-	          	  \uncover<3->{
+	     	         }
+	          	    \uncover<3->{
 	            		\item Comparisons
 	            	}
 	            	\uncover<4->{
@@ -172,13 +169,13 @@
 				\end{itemize}
 			\end{itemize}
 		\column{0.7\textwidth}
-			\only<2>{
+			\uncover<2->{
 				\Graphic{loop}
 			}
-			\only<3>{
+			\uncover<3->{
 				\Graphic{cmp1}
 			}
-			\only<4>{
+			\uncover<4->{
 				\Graphic{sse}
 			}
 	\end{columns}

@@ -5,6 +5,7 @@
 \subsection{Wrapping up}
 
 \begin{frame}{So, what did we learn?}
+    \framesubtitle{Other than typos being the bane of our existence}
     \begin{itemize}
         \item<1-> Emulators like QEMU can be used to help debug code for
                   non-native architectures
@@ -15,13 +16,50 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}{Shoutouts}
+    \framesubtitle{Dennis Yurichev}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{itemize}
+            \item This presentation is built on the shoulders of SMT wizards
+                  like Dennis
+            \item Check out his fantastic writeup on SAT and SMT solvers: 
+                  \url{https://yurichev.com/writings/SAT_SMT_draft-EN.pdf}
+        \end{itemize}
+
+        \column{0.5\textwidth}
+        \Graphic{yurichev-paper}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Shoutouts}
+    \framesubtitle{LiveOverflow}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{itemize}
+            \item Published a video on Z3 two days after this presentation was
+                  delivered at the October DC858 meetup
+            \item Is awesome and you should watch his videos
+        \end{itemize}
+        \column{0.5\textwidth}
+        \Graphic{liveoverflow}
+        \begin{center}
+            \url{https://www.youtube.com/watch?v=TpdDq56KH1I}
+        \end{center}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{More shoutouts}
+    \begin{itemize}
+        \item \VaporSec crew \\ (ice, jkin, pixelmover, m1m, n0m4d1c, s7one ghos7,
+              StaticFlow, \& thecl0ud)
+        \item angersock for coming up with our team name
+        \item DC858/619 folks
+    \end{itemize}
+\end{frame}
+
 \begin{frame}{The end!}
     \begin{itemize}
-        \item This presentation is built on the shoulders of giants; check out
-              Dennis Yurichev's fantastic writeup on SAT and SMT solvers
-        \begin{itemize}
-            \item \url{https://yurichev.com/writings/SAT_SMT_draft-EN.pdf}
-        \end{itemize}
         \item Z3 code for generating sudokus is at \url{https://goo.gl/ZC1546}
         \item Z3 code for solving the CTF challenge is available at
               \url{https://goo.gl/cJPJDN}

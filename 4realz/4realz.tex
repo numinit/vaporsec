@@ -2,6 +2,7 @@
 
 \documentclass[aspectratio=169]{beamer}
 
+\usepackage[english]{babel}
 \usepackage{graphicx}
 \graphicspath{{include/images/}}
 \usepackage{verbatim}
@@ -20,11 +21,12 @@
 % just for the vaporsec text
 \usepackage{xeCJK}
 
-% \usetheme{DarkConsole}
+% Configure beamer
 \usetheme{Madrid}
 \useinnertheme{rectangles}
 \setbeamercolor{normal text}{bg=black!05}
 
+% Add section info to the footline
 \makeatletter
 \setbeamertemplate{footline}{
   \leavevmode%
@@ -57,14 +59,14 @@
 
 \newcommand{\Graphic}[1]{%
     \centerline{\includegraphics[
-        width=\textwidth,max height=0.8\textheight,keepaspectratio
+        width=\textwidth,max height=0.7\textheight,keepaspectratio
     ]{#1}}%
 }
 
 \title{For Realz Mode!}
 \subtitle{
     Reversing an MBR from the CSAW CTF\\
-    {\em (and how to write a keygen with a SAT solver)}
+    {\em (and how to write a keygen with a SMT solver)}
 }
 \author{t0x0 \and numinit}
 \institute{DC858, DC619, and \VaporSec}
